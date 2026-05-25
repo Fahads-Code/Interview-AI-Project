@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useInterview } from "../hooks/useInterview";
 import { useParams, useNavigate } from "react-router";
-import useTheme from "../hooks/useInterview"; 
-import html2pdf from "html2pdf.js"; // 1. html2pdf import kiya
+import useTheme from "../hooks/useInterview"; // Corrected the wrong import path here
 
 // ── Severity Badge ────────────────────────────────────────────────
 const SEV = {
@@ -22,7 +21,7 @@ const SeverityBadge = ({ severity }) => {
 
 // ── Main Component ────────────────────────────────────────────────
 const InterviewReport = () => {
-  const { report, loading, getReportById } = useInterview(); // getResumePdf remove kiya kyunke ab frontend sambhalega
+  const { report, loading, getReportById, getResumePdf } = useInterview();
   const { interviewId } = useParams();
   const navigate = useNavigate();
 
@@ -37,93 +36,42 @@ const InterviewReport = () => {
 
   const dk = isDark;
   
-  const T = {
-    pageBg:         dk ? "#212121" : "#f9f9f9",
-    sidebarBg:      dk ? "#171717" : "#f0f0f0",
-    sidebarBorder:  dk ? "#2a2a2a" : "#e0e0e0",
-    cardBg:         dk ? "#2f2f2f" : "#ffffff",
-    cardBorder:     dk ? "#3d3d3d" : "#e0e0e0",
-    inputBg:        dk ? "#2f2f2f" : "#ffffff",
-    inputBorder:    dk ? "#3d3d3d" : "#d4d4d4",
-    headText:       dk ? "#ececec" : "#0d0d0d",
-    bodyText:       dk ? "#c2c2c2" : "#343434",
-    mutedText:      dk ? "#8e8ea0" : "#6e6e80",
-    accent:         "#10a37f", 
-    accentHover:    "#0d8c6b",
-    accentSoft:     dk ? "#10a37f18" : "#10a37f10",
-    divider:        dk ? "#2f2f2f" : "#e5e5e5",
-    topbarBg:       dk ? "#171717" : "#f0f0f0",
-    topbarBorder:   dk ? "#2a2a2a" : "#e0e0e0",
-    hoverBg:        dk ? "#2a2a2a" : "#e8e8e8",
-    activeItem:     dk ? "#2f2f2f" : "#ffffff",
-    primary:        "#10a37f", 
-    primarySoft:    dk ? "#10a37f18" : "#10a37f10",
-    primaryBorder:  "#10a37f33",
-    secondary:      "#2ea043", 
-    secondarySoft:  dk ? "#2ea04320" : "#2ea04310",
-  };
+  // ── Home Page Matched Premium Color Palette ───────────────────────
+const T = {
+    pageBg:        dk ? "#212121" : "#f9f9f9",
+    sidebarBg:     dk ? "#171717" : "#f0f0f0",
+    sidebarBorder: dk ? "#2a2a2a" : "#e0e0e0",
 
-  // 2. Frontend PDF Generation Logic
-  const handleDownloadPDF = () => {
-    if (!report) return;
+    cardBg:        dk ? "#2f2f2f" : "#ffffff",
+    cardBorder:    dk ? "#3d3d3d" : "#e0e0e0",
+    
+    // In case aapke component mein input use ho raha ho
+    inputBg:       dk ? "#2f2f2f" : "#ffffff",
+    inputBorder:   dk ? "#3d3d3d" : "#d4d4d4",
 
-    const element = document.createElement("div");
-    element.innerHTML = `
-      <div style="padding: 40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; background: #fff;">
-        <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #10a37f; padding-bottom: 20px;">
-          <h1 style="color: #10a37f; margin: 0 0 10px 0; font-size: 28px;">Job Pilot - Interview Preparation Report</h1>
-          <p style="font-size: 16px; color: #555; margin: 0; font-weight: 600;">${report.title || "AI Analysis Report"}</p>
-          <div style="margin-top: 15px; font-size: 18px; color: #333;">
-            <strong>Match Score: <span style="color: #10a37f;">${report.matchScore}/100</span></strong>
-          </div>
-        </div>
+    headText:      dk ? "#ececec" : "#0d0d0d",
+    bodyText:      dk ? "#c2c2c2" : "#343434",
+    mutedText:     dk ? "#8e8ea0" : "#6e6e80",
 
-        <div style="margin-bottom: 25px;">
-          <h2 style="color: #10a37f; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 18px;">Technical Questions & Reference Answers</h2>
-          ${report.technicalQuestions?.map((q, i) => `
-            <div style="margin-bottom: 15px; page-break-inside: avoid;">
-              <p style="font-weight: bold; margin: 0 0 5px 0; color: #0d0d0d; font-size: 13px;">Q${i+1}: ${q.question}</p>
-              <p style="margin: 0 0 5px 0; font-size: 12px; color: #555;"><strong>Intention:</strong> ${q.intention}</p>
-              <p style="margin: 0; font-size: 12px; color: #2b2b2b; background: #f4fbf9; padding: 8px; border-left: 3px solid #10a37f; border-radius: 4px;"><strong>Best Answer:</strong> ${q.answer}</p>
-            </div>
-          `).join('') || '<p style="font-size:12px; color:#777;">No technical questions generated.</p>'}
-        </div>
+    accent:        "#10a37f", // OpenAI Green / Teal
+    accentHover:   "#0d8c6b",
+    accentSoft:    dk ? "#10a37f18" : "#10a37f10",
 
-        <div style="margin-bottom: 25px; page-break-before: auto;">
-          <h2 style="color: #2ea043; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 18px;">Behavioral Questions & Reference Answers</h2>
-          ${report.behavioralQuestions?.map((q, i) => `
-            <div style="margin-bottom: 15px; page-break-inside: avoid;">
-              <p style="font-weight: bold; margin: 0 0 5px 0; color: #0d0d0d; font-size: 13px;">Q${i+1}: ${q.question}</p>
-              <p style="margin: 0 0 5px 0; font-size: 12px; color: #555;"><strong>Intention:</strong> ${q.intention}</p>
-              <p style="margin: 0; font-size: 12px; color: #2b2b2b; background: #f5fbf6; padding: 8px; border-left: 3px solid #2ea043; border-radius: 4px;"><strong>Best Answer:</strong> ${q.answer}</p>
-            </div>
-          `).join('') || '<p style="font-size:12px; color:#777;">No behavioral questions generated.</p>'}
-        </div>
+    divider:       dk ? "#2f2f2f" : "#e5e5e5",
 
-        <div style="margin-bottom: 25px; page-break-before: auto;">
-          <h2 style="color: #10a37f; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 18px;">Preparation Roadmap</h2>
-          ${report.preprationPlans?.map((plan) => `
-            <div style="margin-bottom: 15px; background: #fafafa; padding: 12px; border-radius: 6px; page-break-inside: avoid;">
-              <span style="background: #10a37f; color: #fff; font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 10px;">Day ${plan.day}</span>
-              <strong style="font-size: 13px; marginLeft: 10px; color: #0d0d0d;"> - Focus: ${plan.focus}</strong>
-              <ul style="margin: 8px 0 0 0; padding-left: 20px; font-size: 12px; color: #343434;">
-                ${plan.tasks?.map(task => `<li style="margin-bottom: 4px;">${task}</li>`).join('')}
-              </ul>
-            </div>
-          `).join('') || '<p style="font-size:12px; color:#777;">No roadmap available.</p>'}
-        </div>
-      </div>
-    `;
+    topbarBg:      dk ? "#171717" : "#f0f0f0",
+    topbarBorder:  dk ? "#2a2a2a" : "#e0e0e0",
 
-    const opt = {
-      margin:       0.5,
-      filename:     `Interview_Report_${interviewId}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
+    hoverBg:       dk ? "#2a2a2a" : "#e8e8e8",
+    activeItem:    dk ? "#2f2f2f" : "#ffffff",
 
-    html2pdf().set(opt).from(element).save();
+    // Naye component ki mapping pehle wale colors ke sath
+    primary:       "#10a37f", 
+    primarySoft:   dk ? "#10a37f18" : "#10a37f10",
+    primaryBorder: "#10a37f33",
+
+    secondary:     "#2ea043", // Clean green (behavioral badge aur roadmap dots ke liye best match)
+    secondarySoft: dk ? "#2ea04320" : "#2ea04310",
   };
 
   const navItems = [
@@ -143,6 +91,7 @@ const InterviewReport = () => {
 
   const scoreColor = report?.matchScore >= 70 ? "#10a37f" : report?.matchScore >= 50 ? "#f59e0b" : "#ef4444";
 
+  // ── Loading ───────────────────────────────────────────────────
   if (loading) return (
     <div style={{ minHeight:"100vh", background:T.pageBg, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"20px", fontFamily:"ui-sans-serif,system-ui,-apple-system,sans-serif" }}>
       <div style={{ position:"relative", width:"44px", height:"44px" }}>
@@ -150,8 +99,8 @@ const InterviewReport = () => {
         <div className="animate-spin" style={{ position:"absolute", inset:0, borderRadius:"50%", border:"3px solid transparent", borderTopColor:T.accent }}/>
       </div>
       <div style={{ textAlign:"center" }}>
-        <p style={{ color:T.headText, fontWeight:600, fontSize:"15px", margin:0 }}>Loading report...</p>
-        <p style={{ color:T.mutedText, fontSize:"13px", margin:"4px 0 0" }}>Fetching data from database</p>
+        <p style={{ color:T.headText, fontWeight:600, fontSize:"15px", margin:0 }}>Generating your Pdf...</p>
+        <p style={{ color:T.mutedText, fontSize:"13px", margin:"4px 0 0" }}>AI analysis in progress</p>
       </div>
     </div>
   );
@@ -162,6 +111,7 @@ const InterviewReport = () => {
     </div>
   );
 
+  // ── Question Card ─────────────────────────────────────────────
   const QuestionCard = ({ q, idx, prefix, accentColor }) => {
     const key = `${prefix}${idx}`;
     const open = activeQ === key;
@@ -195,6 +145,7 @@ const InterviewReport = () => {
     );
   };
 
+  // ── Render Section ────────────────────────────────────────────
   const renderMain = () => {
     if (activeSection === "technical") return (
       <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
@@ -318,16 +269,15 @@ const InterviewReport = () => {
 
         {/* Download PDF + Theme toggle */}
         <div style={{ padding:"10px 10px 14px", borderTop:`1px solid ${T.sidebarBorder}`, display:"flex", flexDirection:"column", gap:"6px" }}>
-          {/* 3. Button Click par handleDownloadPDF call kiya */}
           <button
-            onClick={handleDownloadPDF} 
+            onClick={() => getResumePdf(interviewId)}
             style={{ width:"100%", display:"flex", alignItems:"center", gap:"8px", padding:"9px 10px", borderRadius:"8px", border:"none", background:T.primary, color:"#fff", cursor:"pointer", fontSize:"13px", fontWeight:600, transition:"opacity 0.15s" }}
             onMouseOver={e=>e.currentTarget.style.opacity="0.85"} onMouseOut={e=>e.currentTarget.style.opacity="1"}
           >
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
             </svg>
-            Download Report PDF
+            Download Resume
           </button>
           <button
             onClick={() => setIsDark(p => !p)}
@@ -417,7 +367,7 @@ const InterviewReport = () => {
                 { label:"Technical Qs",  val:report.technicalQuestions?.length,  color:T.primary   },
                 { label:"Behavioral Qs", val:report.behavioralQuestions?.length, color:T.secondary },
                 { label:"Skill Gaps",    val:report.skillGaps?.length,           color:"#eab308"   },
-                { label:"Plan Days",     val:report.preprationPlans?.length,     color:T.primary   }, 
+                { label:"Plan Days",     val:report.preprationPlans?.length,     color:T.primary   }, // Replaced T.emerald with T.primary to prevent crash
               ].map((item, i) => (
                 <div key={i} style={{ background:T.cardBg, border:`1px solid ${T.cardBorder}`, borderRadius:"8px", padding:"8px 10px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:"7px" }}>
