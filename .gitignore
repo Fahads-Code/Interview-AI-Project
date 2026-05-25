@@ -1,0 +1,16 @@
+# Node Modules (Heavy folders jo GitHub par nahi bhejne)
+backend/node_modules/
+frontend/node_modules/
+
+# Secret Files (In mein aapke passwords hain, inhein hamesha chupana hai)
+backend/.env
+frontend/.env
+.env
+
+# Frontend Build Folder
+frontend/dist/
+frontend/build/
+
+# Operating System Files
+.DS_Store
+Thumbs.db

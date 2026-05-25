@@ -1,0 +1,153 @@
+{
+  "title": "Senior Full-Stack Engineer (MERN & .NET Specialist)",
+  "matchScore": 85,
+  "technicalQuestions": [
+    {
+      "question": "Can you explain the difference between React Context API and state management libraries like Zustand or Redux?",
+      "intention": "To assess the candidate's understanding of state management in React",
+      "answer": "The candidate should explain the purpose of each, their use cases, and how they differ in managing global state in React applications."
+    },
+    {
+      "question": "How would you optimize the performance of a .NET Core API?",
+      "intention": "To evaluate the candidate's knowledge of .NET Core performance optimization",
+      "answer": "The candidate should discuss techniques such as caching, query optimization, and using efficient data structures."
+    },
+    {
+      "question": "Describe your experience with DevOps practices, including Docker and CI/CD pipelines.",
+      "intention": "To assess the candidate's understanding of DevOps practices",
+      "answer": "The candidate should share their experience with containerization using Docker, setting up CI/CD pipelines, and deploying applications to cloud platforms."
+    }
+  ],
+  "behavioralQuestions": [
+    {
+      "question": "Tell me about a time when you had to architect a complex web application from scratch.",
+      "intention": "To evaluate the candidate's experience in architecting complex web applications",
+      "answer": "The candidate should describe a project where they designed and built a complex web application, highlighting their technical decisions and problem-solving skills."
+    },
+    {
+      "question": "Can you describe a situation where you had to optimize the performance of a slow-loading web page?",
+      "intention": "To assess the candidate's problem-solving skills in performance optimization",
+      "answer": "The candidate should share a specific example, explaining the steps they took to identify and address performance bottlenecks."
+    },
+    {
+      "question": "How do you stay up-to-date with the latest developments in the MERN stack and .NET ecosystem?",
+      "intention": "To evaluate the candidate's commitment to continuous learning",
+      "answer": "The candidate should discuss their approach to staying current with new technologies, such as attending conferences, reading blogs, or participating in online communities."
+    }
+  ],
+  "skillGaps": [
+    {
+      "skill": "AI integration",
+      "severity": "medium"
+    },
+    {
+      "skill": "Real-time data processing",
+      "severity": "low"
+    }
+  ],
+  "preparationPlan": [
+    {
+      "day": 1,
+      "focus": "Reviewing React.js and state management concepts",
+      "tasks": [
+        "Review React.js documentation",
+        "Practice building a simple React application with Zustand or Redux"
+      ]
+    },
+    {
+      "day": 2,
+      "focus": "Preparing for .NET Core and Entity Framework questions",
+      "tasks": [
+        "Review .NET Core documentation",
+        "Practice building a simple .NET Core API with Entity Framework"
+      ]
+    },
+    {
+      "day": 3,
+      "focus": "Practicing DevOps and cloud deployment concepts",
+      "tasks": [
+        "Review Docker documentation",
+        "Practice deploying a simple application to a cloud platform (AWS/Azure/Vercel)"
+      ]
+    },
+    {
+      "day": 4,
+      "focus": "Reviewing NoSQL and Relational Databases concepts",
+      "tasks": [
+        "Review MongoDB documentation",
+        "Practice building a simple MongoDB application"
+      ]
+    },
+    {
+      "day": 5,
+      "focus": "Practicing behavioral questions and whiteboarding exercises",
+      "tasks": [
+        "Practice answering behavioral questions",
+        "Practice whiteboarding exercises to improve problem-solving skills"
+      ]
+    },
+    {
+      "day": 6,
+      "focus": "Final review and practice",
+      "tasks": [
+        "Review all technical concepts",
+        "Practice building a simple full-stack application using MERN stack and .NET ecosystem"
+      ]
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+const jobDescription = `Position: Senior Medical Research Scientist
+
+Role Overview:
+We are looking for an experienced and passionate Medical Researcher to join our clinical research 
+team. You will be responsible for designing and conducting studies that advance our understanding 
+of diseases, treatments, and patient outcomes. This isn't just about running experiments; it's 
+about saving lives through science.
+
+Detailed Requirements:
+- PhD or Master's degree in Medical Sciences, Biomedical Research, Pharmacology, or related field.
+- Expert-level experience in designing clinical trials (Phase I-IV) and observational studies.
+- Strong knowledge of biostatistics and data analysis tools like SPSS, R, or SAS.
+- Experience with laboratory techniques including PCR, ELISA, Western Blot, and cell culture.
+- Deep understanding of GCP (Good Clinical Practice), ICH guidelines, and ethical research protocols.
+- Proficiency in writing and publishing research papers in peer-reviewed journals (PubMed, Lancet, NEJM).
+- Experience with grant writing and securing funding from organizations like NIH, WHO, or HEC Pakistan.
+- Knowledge of pharmacovigilance, drug safety reporting, and regulatory submissions (FDA/EMA/DRAP).
+- Familiarity with genomics, proteomics, and bioinformatics tools like BLAST or Galaxy.
+- Strong collaboration skills to work with clinicians, bioethics boards, and pharmaceutical companies.
+
+What We Offer:
+- Competitive research stipend with publication bonuses.
+- Access to state-of-the-art laboratory and clinical facilities.
+- Opportunities to collaborate with international research institutions.
+- Flexible research hours and remote data analysis options.
+- Support for conference participation and journal publication fees.`
+
+        const selfDescription = `I am a dedicated Medical Researcher with a strong passion for translational 
+research — bridging the gap between laboratory discoveries and real-world clinical applications. 
+Currently pursuing advanced research in infectious diseases and chronic illness management, 
+with a focus on conditions highly prevalent in Pakistan such as Hepatitis, Tuberculosis, 
+Diabetes, and Cardiovascular Disease.
+
+My research expertise includes designing and executing clinical trials, conducting systematic 
+reviews and meta-analyses, and performing advanced statistical analysis using SPSS and R. 
+I have hands-on laboratory experience with PCR-based diagnostics, ELISA assays, and 
+histopathological analysis. My published work spans topics including antibiotic resistance 
+patterns in hospital-acquired infections and the efficacy of locally available diabetic 
+treatment protocols.
+
+Based in Karachi, I have collaborated with major institutions including Aga Khan University 
+Hospital and Dow University of Health Sciences, contributing to research that directly 
+influences clinical decision-making in our healthcare system. I thrive in environments 
+that demand scientific rigor, critical thinking, and a deep commitment to improving 
+patient outcomes through evidence-based medicine.`

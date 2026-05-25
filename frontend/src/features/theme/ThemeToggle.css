@@ -1,0 +1,25 @@
+.theme-toggle {
+  background: var(--theme-toggle-bg);
+  border: 2px solid var(--theme-toggle-border);
+  color: var(--theme-toggle-text);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.theme-toggle:hover {
+  background: var(--theme-toggle-bg-hover);
+  border-color: var(--theme-toggle-border-hover);
+  transform: scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
