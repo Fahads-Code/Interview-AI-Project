@@ -25,8 +25,8 @@ app.use(cors({
 }));
 
 app.set("view engine", "ejs");
-app.use("/auth", authRouter);
-app.use("/interview", interviewRoute);
+app.use("/api/auth", authRouter);
+app.use("/api/interview", interviewRoute);
 
 app.get("/", function(req, res){
     res.send("Interview Backend is Running");
