@@ -73,25 +73,38 @@ async function getInterviewReport(req, res) {
 }
 
 async function generateResumePdfController(req, res) {
-    const { interviewReportId } = req.params;
-    const interviewReport = await interviewReportModel.findById(interviewReportId);
+    try {
+        const { interviewReportId } = req.params;
+        const interviewReport = await interviewReportModel.findById(interviewReportId);
 
-    if (!interviewReport) {
-        return res.status(400).json({
-            message: "Interview report not found",
-        })
+        if (!interviewReport) {
+            return res.status(404).json({ // 404 standard hai Not Found ke liye
+                message: "Interview report not found",
+            });
+        }
+
+        const { resume, jobDescription, selfDescription } = interviewReport;
+        
+        // PDF Generate karne wale function ko call kiya
+        const { pdfBuffer } = await generateResumePdf({ resume, jobDescription, selfDescription });
+
+        // Response headers set kiye taake browser file ko sahi se download kare
+        res.set({
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename="resume_${interviewReportId}.pdf"`, // ✅ Fixed: Added .pdf extension
+            "Content-Length": pdfBuffer.length
+        });
+
+        // Seedha buffer frontend ko bhej diya
+        return res.send(pdfBuffer);
+
+    } catch (error) {
+        console.error("Controller Error in PDF Generation:", error);
+        return res.status(500).json({
+            message: "Internal Server Error while generating resume PDF",
+            error: error.message
+        });
     }
-
-    const { resume, jobDescription, selfDescription } = interviewReport;
-    const { pdfBuffer } = await generateResumePdf({ resume, jobDescription, selfDescription });
-
-    res.set({
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename=resume_${interviewReportId}`
-
-    })
-    res.send(pdfBuffer);
-
 }
 
 module.exports = { interviewReport, getInterviewReport, getAllInterviewReports ,generateResumePdfController};

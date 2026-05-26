@@ -11,6 +11,11 @@
       "config": { "distDir": "dist" }
     }
   ],
+  "functions": {
+    "backend/app.js": {
+      "maxDuration": 60
+    }
+  },
   "routes": [
     {
       "src": "/api/(.*)",

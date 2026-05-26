@@ -577,19 +577,29 @@ ${aiContent}
 </html>
 `;
 
-
-
         // ─────────────────────────────────────────────
-        // STEP 4: PUPPETEER PDF
+        // STEP 4: PUPPETEER PDF (Vercel + Local Fix)
         // ─────────────────────────────────────────────
+        let browser;
 
-        const browser = await puppeteer.launch({
-            headless: "new",
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox"
-            ]
-        });
+        // Agar environment Vercel ya Production hai
+        if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+            const chromium = require("@sparticuz/chromium");
+            const puppeteerCore = require("puppeteer-core");
+
+            browser = await puppeteerCore.launch({
+                args: chromium.args,
+                defaultViewport: chromium.defaultViewport,
+                executablePath: await chromium.executablePath(),
+                headless: chromium.headless,
+            });
+        } else {
+            // Local machine ke liye purana layout
+            browser = await puppeteer.launch({
+                headless: "new",
+                args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            });
+        }
 
         const page = await browser.newPage();
 
@@ -624,12 +634,14 @@ ${aiContent}
         await browser.close();
 
         // ─────────────────────────────────────────────
-        // STEP 5: SAVE PDF
+        // STEP 5: SAVE PDF (Vercel ke liye fallback control)
         // ─────────────────────────────────────────────
-
-        fs.writeFileSync(finalOutputPath, pdfBuffer);
-
-        console.log("✅ Premium Resume PDF Generated");
+        try {
+            fs.writeFileSync(finalOutputPath, pdfBuffer);
+            console.log("✅ Premium Resume PDF Saved to disk");
+        } catch (fsErr) {
+            console.log("⚠️ Disk write skipped (Expected behavior on read-only serverless platforms like Vercel)");
+        }
 
         return {
             filePath: finalOutputPath,
@@ -637,9 +649,7 @@ ${aiContent}
         };
 
     } catch (error) {
-
         console.error("Resume PDF Error:", error);
-
         throw new Error(
             `Failed to generate resume PDF: ${error.message}`
         );
