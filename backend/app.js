@@ -7,17 +7,21 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const interviewRoute = require("./routes/interview.routes");
 
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS ko update kiya takay local aur Vercel live link dono par chale
+// Optimized CORS Configuration
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"]; // Apne local frontend ports add karein
+
 app.use(cors({
     origin: function (origin, callback) {
-        // Agar local chal raha ho ya Vercel ka koi bhi url ho, to allow karein
-        if (!origin || origin.startsWith("http://localhost") || origin.includes(".vercel.app")) {
+        // 1. Local development, 2. No origin (like Postman), 3. Vercel deployment URLs
+        if (!origin || allowedOrigins.includes(origin) || origin.startsWith("http://localhost:") || origin.includes(".vercel.app")) {
             callback(null, true);
         } else {
+            console.log("Blocked by CORS:", origin); // Vercel logs mein check karne ke liye
             callback(new Error("Not allowed by CORS"));
         }
     },
@@ -25,19 +29,22 @@ app.use(cors({
 }));
 
 app.set("view engine", "ejs");
+
+// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/interview", interviewRoute);
 
 app.get("/", function(req, res){
-    res.send("Interview Backend is Running");
+    res.status(200).send("Interview Backend is Running successfully on Vercel!");
 });
 
-// Vercel local environment ke bahar listen() ko handle karne ke liye
+// Port configuration for Local Development
+const PORT = process.env.PORT || 3000;
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(3000, function(){
-        console.log("Running on port 3000");
+    app.listen(PORT, function(){
+        console.log(`Running locally on port ${PORT}`);
     });
 }
 
-// YEH LINE VERCEL KE LIYE SAB SE ZAROORI HAI
+// VERCEL REQUIREMENT
 module.exports = app;
