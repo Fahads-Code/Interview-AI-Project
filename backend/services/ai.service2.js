@@ -580,58 +580,57 @@ ${aiContent}
         // ─────────────────────────────────────────────
         // STEP 4: PUPPETEER PDF (Vercel + Local Fix)
         // ─────────────────────────────────────────────
-        let browser;
+       // STEP 4: PUPPETEER PDF (Vercel + Local Fix)
+let browser;
 
-        // Agar environment Vercel ya Production hai
-        if (process.env.VERCEL || process.env.NODE_ENV === "production") {
-            const chromium = require("@sparticuz/chromium");
-            const puppeteerCore = require("puppeteer-core");
+if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+    const chromium = require("@sparticuz/chromium");
+    const puppeteerCore = require("puppeteer-core");
 
-            browser = await puppeteerCore.launch({
-                args: chromium.args,
-                defaultViewport: chromium.defaultViewport,
-                executablePath: await chromium.executablePath(),
-                headless: chromium.headless,
-            });
-        } else {
-            // Local machine ke liye purana layout
-            browser = await puppeteer.launch({
-                headless: "new",
-                args: ["--no-sandbox", "--disable-setuid-sandbox"]
-            });
-        }
+    // ✅ FIX 1: executablePath() ko await karo aur explicitly pass karo
+    const execPath = await chromium.executablePath();
 
-        const page = await browser.newPage();
+    browser = await puppeteerCore.launch({
+        args: [...chromium.args, "--no-sandbox", "--disable-setuid-sandbox"],
+        defaultViewport: { width: 1200, height: 1600 },
+        executablePath: execPath,
+        headless: true,
+    });
+} else {
+    browser = await puppeteer.launch({
+        headless: "new",
+        args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+}
 
-        await page.setViewport({
-            width: 1400,
-            height: 2000,
-            deviceScaleFactor: 2
-        });
+const page = await browser.newPage();
 
-        await page.setContent(finalHtml, {
-            waitUntil: "networkidle0"
-        });
+await page.setViewport({
+    width: 1200,
+    height: 1600,
+    deviceScaleFactor: 1  // ✅ FIX 2: 2 se 1 — memory save
+});
 
-        // FONT LOAD WAIT
-        await page.evaluateHandle('document.fonts.ready');
+// ✅ FIX 3: networkidle0 hatao — Vercel pr Google Fonts load nahi hongi
+await page.setContent(finalHtml, {
+    waitUntil: "domcontentloaded"  // networkidle0 ki jagah
+});
 
-        await new Promise(resolve => setTimeout(resolve, 1200));
+// ✅ FIX 4: Font wait aur setTimeout hatao — useless on serverless
 
-        // PDF GENERATE
-        const pdfBuffer = await page.pdf({
-            format: "A4",
-            printBackground: true,
-            preferCSSPageSize: true,
-            margin: {
-                top: "10mm",
-                bottom: "10mm",
-                left: "10mm",
-                right: "10mm"
-            }
-        });
+const pdfBuffer = await page.pdf({
+    format: "A4",
+    printBackground: true,
+    preferCSSPageSize: true,
+    margin: {
+        top: "10mm",
+        bottom: "10mm",
+        left: "10mm",
+        right: "10mm"
+    }
+});
 
-        await browser.close();
+await browser.close();
 
         // ─────────────────────────────────────────────
         // STEP 5: SAVE PDF (Vercel ke liye fallback control)
