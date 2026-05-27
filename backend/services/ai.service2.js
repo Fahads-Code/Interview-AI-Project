@@ -390,7 +390,6 @@ ${selfDescription}
 <head>
 <meta charset="UTF-8" />
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
@@ -400,6 +399,7 @@ html, body {
     margin: 0;
     padding: 0;
     background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 body {
