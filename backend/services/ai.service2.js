@@ -588,14 +588,22 @@ if (process.env.VERCEL || process.env.NODE_ENV === "production") {
     const puppeteerCore = require("puppeteer-core");
 
     // ✅ FIX 1: executablePath() ko await karo aur explicitly pass karo
-    const execPath = await chromium.executablePath();
+    const execPath = await chromium.executablePath(
+  process.env.CHROMIUM_PATH || undefined
+);
 
     browser = await puppeteerCore.launch({
-        args: [...chromium.args, "--no-sandbox", "--disable-setuid-sandbox"],
-        defaultViewport: { width: 1200, height: 1600 },
-        executablePath: execPath,
-        headless: true,
-    });
+    args: [
+        ...chromium.args,
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",  // ✅ Yeh add karein
+        "--single-process",          // ✅ Yeh bhi add karein - Vercel ke liye zaroori
+    ],
+    defaultViewport: chromium.defaultViewport, // ✅ Hardcoded ki jagah yeh use karein
+    executablePath: execPath,
+    headless: chromium.headless, // ✅ true ki jagah yeh
+});
 } else {
     browser = await puppeteer.launch({
         headless: "new",
