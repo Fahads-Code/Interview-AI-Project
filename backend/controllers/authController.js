@@ -1,6 +1,3 @@
-const userModel = require("../models/user");
-const blacklistModel = require("../models/tokenBlacklist");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 async function registerUser(req, res){
@@ -37,7 +34,13 @@ async function registerUser(req, res){
         email: user.email
     }, process.env.SECRET_KEY, {expiresIn: "1d"});
 
-    res.cookie("token", token);
+    // ✅ FIXED: Production ke liye sahi cookie options
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 24 * 60 * 60 * 1000
+    });
 
     res.status(201).json({
         message: "User registered successfully!",
@@ -59,7 +62,6 @@ async function loginUser(req, res){
         })
     } 
 
-  
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if(!isPasswordCorrect){
         return res.status(400).json({
@@ -73,9 +75,14 @@ async function loginUser(req, res){
         {expiresIn: "1d"} 
     );
 
-    res.cookie("token", token);
+    // ✅ FIXED: Production ke liye sahi cookie options
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 24 * 60 * 60 * 1000
+    });
 
-  
     return res.status(200).json({
         message: "Login successful!",
         user: {
@@ -91,7 +98,12 @@ async function logoutUser(req, res){
    if(token) {
      await blacklistModel.create({ token })
    }
-   res.clearCookie("token");
+   // ✅ FIXED: clearCookie mein bhi same options dene zaroori hain
+   res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+   });
    res.json({
     message: "User logged out successfully!"
    })
